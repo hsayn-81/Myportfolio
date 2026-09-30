@@ -41,12 +41,11 @@ interface ProfileData {
 export default function HeroSection({ profile }: { profile: ProfileData | null }) {
   if (!profile) return null;
 
-  const bgImage = profile.heroBgUrl || "/hero-bg.jpg";
+  const bgImage = profile.heroBgUrl || "/hero-bg.png";
 
   return (
-    <section className="relative w-full h-screen min-h-[700px] overflow-hidden bg-black">
-      
-      {/* 1. BACKGROUND IMAGE LAYER */}
+    <section className="relative w-full min-h-[100svh] overflow-hidden bg-black">
+      {/* Background */}
       <div className="absolute inset-0 z-0">
         <img
           src={bgImage}
@@ -54,66 +53,84 @@ export default function HeroSection({ profile }: { profile: ProfileData | null }
           className="w-full h-full object-cover object-center"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            if (target.src.endsWith(".png")) {
-              target.src = "/hero-bg.jpg";
-            }
+            if (target.src.endsWith(".png")) target.src = "/hero-bg.jpg";
           }}
         />
-        {/* Shadow Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-[#0a0a0a] z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-[#0a0a0a]" />
       </div>
 
-      {/* 2. GIANT BACKDROP TEXT (DEVELOPER) */}
-      <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none z-10 w-full text-center">
-        <span className="text-[23vw] sm:text-[19vw] lg:text-[220px] font-black tracking-tighter text-[#e5d2b8]/20 font-mono uppercase leading-none drop-shadow-2xl">
+      {/* DEVELOPER text - smaller on mobile, less cramped */}
+      <div className="absolute top-[42%] sm:top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none z-10 w-full text-center px-2">
+        <span className="text-[16vw] sm:text-[14vw] lg:text-[180px] font-black tracking-tighter text-[#e5d2b8]/15 font-mono uppercase leading-none">
           DEVELOPER
         </span>
       </div>
 
-      {/* 3. CENTER: CUTOUT PERSON PNG (Anchored to bottom) */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[68vh] sm:h-[78vh] max-h-[880px] flex justify-center items-end z-20 pointer-events-none">
+      {/* Mobile top identity (since desktop name is in navbar) */}
+      <div className="relative z-20 pt-20 sm:pt-28 md:pt-32 px-4 sm:px-6 max-w-7xl mx-auto">
+        <div className="md:hidden text-center space-y-1 mb-4">
+          <h1 className="text-2xl font-extrabold tracking-tight text-[#f5ea3d]/90 uppercase font-mono">
+            {profile.fullName}
+          </h1>
+          <p className="text-xs font-mono text-[#dcc2a3] font-semibold">
+            {profile.title}
+          </p>
+          <p className="text-[11px] text-zinc-300 max-w-xs mx-auto leading-relaxed pt-1">
+            {profile.tagline}
+          </p>
+        </div>
+      </div>
+
+      {/* Person image - less cramped height on mobile */}
+      <div className="relative z-20 flex justify-center items-end min-h-[48vh] sm:min-h-[58vh] lg:min-h-[68vh] pointer-events-none mt-2 sm:mt-0">
         {profile.avatarUrl ? (
           <img
             src={profile.avatarUrl}
             alt={profile.fullName}
-            className="w-auto h-full object-contain object-bottom filter drop-shadow-[0_40px_60px_rgba(0,0,0,0.95)]"
+            className="w-auto h-[48vh] sm:h-[62vh] lg:h-[72vh] max-h-[760px] object-contain object-bottom drop-shadow-[0_30px_50px_rgba(0,0,0,0.9)]"
           />
         ) : (
-          <div className="h-72 w-56 rounded-2xl bg-black/70 border border-zinc-700 flex items-center justify-center p-4 text-center backdrop-blur-md pointer-events-auto mb-10">
+          <div className="h-56 w-44 rounded-2xl bg-black/70 border border-zinc-700 flex items-center justify-center mb-8">
             <span className="text-xs text-amber-300 font-mono">Upload Person PNG</span>
           </div>
         )}
-        
-        {/* Shadow fade at bottom */}
-        <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-[#0a0a0a] to-transparent z-10" />
       </div>
 
-      {/* 4. BOTTOM ROW: Social Links & Giant Role Title */}
-      <div className="absolute bottom-8 sm:bottom-12 inset-x-0 z-30 pointer-events-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
-          
-          <div className="md:col-span-6 flex items-center gap-3 justify-center md:justify-start">
+      {/* Bottom row */}
+      <div className="relative z-30 -mt-2 sm:mt-0 pb-6 sm:pb-10 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+          <div className="flex items-center justify-center sm:justify-start gap-2">
             {profile.socialLinks?.github && (
-              <a href={profile.socialLinks.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-[#205ec9]/90 hover:bg-[#1a4ea8] text-white rounded-md text-xs sm:text-sm font-mono transition-colors shadow-xl">
-                <GithubIcon /><span>GitHub</span>
+              <a
+                href={profile.socialLinks.github}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#205ec9]/90 hover:bg-[#1a4ea8] text-white rounded-md text-xs font-mono transition-colors shadow-xl"
+              >
+                <GithubIcon />
+                <span>GitHub</span>
               </a>
             )}
             {profile.socialLinks?.linkedin && (
-              <a href={profile.socialLinks.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-[#a32279]/90 hover:bg-[#881a64] text-white rounded-md text-xs sm:text-sm font-mono transition-colors shadow-xl">
-                <LinkedinIcon /><span>LinkedIn</span>
+              <a
+                href={profile.socialLinks.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#a32279]/90 hover:bg-[#881a64] text-white rounded-md text-xs font-mono transition-colors shadow-xl"
+              >
+                <LinkedinIcon />
+                <span>LinkedIn</span>
               </a>
             )}
           </div>
 
-          <div className="md:col-span-6 text-center md:text-right">
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#f5ea3d]/90 font-mono uppercase drop-shadow-lg">
+          <div className="text-center sm:text-right">
+            <h2 className="text-xl sm:text-3xl lg:text-4xl font-black tracking-tight text-[#f5ea3d]/90 font-mono uppercase drop-shadow-lg">
               FULL-STACK DEV.
             </h2>
           </div>
-
         </div>
       </div>
-
     </section>
   );
 }
