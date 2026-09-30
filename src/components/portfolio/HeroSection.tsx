@@ -41,7 +41,7 @@ interface ProfileData {
 export default function HeroSection({ profile }: { profile: ProfileData | null }) {
   if (!profile) return null;
 
-  const bgImage = profile.heroBgUrl || "/hero-bg.png";
+  const bgImage = profile.heroBgUrl || "/hero-bg.jpg";
 
   return (
     <section className="relative w-full min-h-[100svh] overflow-hidden bg-black">
